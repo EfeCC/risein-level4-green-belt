@@ -7,6 +7,7 @@ import { explorerTx } from "@/lib/config";
 
 const STAGE_LABEL: Record<TxStage, string> = {
   building: "Preparing transaction…",
+  funding: "Funding your testnet account…",
   signing: "Waiting for wallet signature…",
   sending: "Submitting to Stellar…",
   confirming: "Confirming on-chain…",

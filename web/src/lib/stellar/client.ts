@@ -14,12 +14,16 @@ import {
   BASE_FEE,
   xdr,
 } from "@stellar/stellar-sdk";
-import { RPC_URL, NETWORK_PASSPHRASE } from "../config";
+import { RPC_URL, NETWORK_PASSPHRASE, NETWORK } from "../config";
 import { signTx } from "./wallet";
 
 export const server = new rpc.Server(RPC_URL, {
   allowHttp: RPC_URL.startsWith("http://"),
 });
+
+// Testnet faucet. A brand-new wallet has no on-ledger account until it is
+// funded, so first-time users are auto-funded here (see loadSourceAccount).
+const FRIENDBOT_URL = process.env.NEXT_PUBLIC_FRIENDBOT_URL ?? "https://friendbot.stellar.org";
 
 // Ephemeral source account used only to simulate read-only calls. Simulation
 // never verifies or submits, so this key is never funded and never signs.
@@ -59,7 +63,7 @@ export async function readContract<T = unknown>(
   return scValToNative(retval) as T;
 }
 
-export type TxStage = "building" | "signing" | "sending" | "confirming";
+export type TxStage = "building" | "funding" | "signing" | "sending" | "confirming";
 
 /** Signed write call. Returns the confirmed transaction hash. */
 export async function writeContract(
@@ -71,7 +75,7 @@ export async function writeContract(
 ): Promise<string> {
   onStage?.("building");
   const contract = new Contract(contractId);
-  const account = await server.getAccount(walletAddress);
+  const account = await loadSourceAccount(walletAddress, onStage);
   const built = new TransactionBuilder(account, {
     fee: BASE_FEE,
     networkPassphrase: NETWORK_PASSPHRASE,
@@ -147,4 +151,55 @@ function cleanRaw(raw: string): string {
 function errString(e: unknown): string {
   if (e instanceof Error) return e.message;
   return typeof e === "string" ? e : JSON.stringify(e);
+}
+
+/**
+ * Loads the transaction source account, auto-funding it on testnet when it does
+ * not exist yet. A freshly created wallet has no on-ledger account until it
+ * holds XLM, so a first-time user's very first write would otherwise fail with
+ * "Account not found". On testnet we transparently create + fund it via
+ * Friendbot and retry — removing the biggest onboarding blocker.
+ */
+async function loadSourceAccount(
+  walletAddress: string,
+  onStage?: (stage: TxStage) => void,
+): Promise<Account> {
+  try {
+    return await server.getAccount(walletAddress);
+  } catch (e) {
+    if (NETWORK !== "testnet" || !/not\s*found/i.test(errString(e))) throw e;
+    onStage?.("funding");
+    await fundTestnetAccount(walletAddress);
+    // The RPC can briefly lag Friendbot's submission; retry before giving up.
+    for (let i = 0; i < 6; i += 1) {
+      try {
+        return await server.getAccount(walletAddress);
+      } catch {
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+    throw new Error(
+      "Funded your testnet account, but it isn't visible yet — wait a few seconds and try again.",
+    );
+  }
+}
+
+/** Create + fund a testnet account via Friendbot (the standard testnet faucet). */
+async function fundTestnetAccount(walletAddress: string): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(`${FRIENDBOT_URL}/?addr=${encodeURIComponent(walletAddress)}`);
+  } catch {
+    throw new Error(
+      "Couldn't reach the testnet faucet. Fund your address at friendbot.stellar.org, then retry.",
+    );
+  }
+  if (res.ok) return;
+  // A concurrent fund (op_already_exists) means the account now exists — fine.
+  const body = await res.text().catch(() => "");
+  if (!/already.*exist|op_already_exists|already.*funded/i.test(body)) {
+    throw new Error(
+      "The testnet faucet couldn't fund your account. Fund it at friendbot.stellar.org, then retry.",
+    );
+  }
 }
