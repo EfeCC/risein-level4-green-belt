@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/*
+ * HarvestLink theme — an agri-finance product: grounded greens + a warm grain
+ * gold accent, credible fintech neutrals. Light and dark aware.
+ */
+@theme {
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+  --color-grain-400: #fbbf24;
+  --color-grain-500: #f59e0b;
+  --color-grain-600: #d97706;
+}
+
+:root {
+  --bg: #f5f7f3;
+  --bg-elevated: #ffffff;
+  --border: #e4e7e2;
+  --text: #0f172a;
+  --text-muted: #5b6472;
+  --ring: rgba(5, 150, 105, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1120;
+    --bg-elevated: #111a2e;
+    --border: #1f2a44;
+    --text: #e8edf6;
+    --text-muted: #94a3b8;
+    --ring: rgba(52, 211, 153, 0.35);
+  }
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f7f3;
+  --bg-elevated: #ffffff;
+  --border: #e4e7e2;
+  --text: #0f172a;
+  --text-muted: #5b6472;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1120;
+  --bg-elevated: #111a2e;
+  --border: #1f2a44;
+  --text: #e8edf6;
+  --text-muted: #94a3b8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ---- shared component classes ---- */
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.hairline {
+  border-color: var(--border);
+}
+
+.hero-mesh {
+  background:
+    radial-gradient(60% 60% at 15% 10%, rgba(16, 185, 129, 0.18), transparent 60%),
+    radial-gradient(50% 50% at 90% 15%, rgba(245, 158, 11, 0.15), transparent 55%),
+    radial-gradient(60% 60% at 60% 100%, rgba(5, 150, 105, 0.12), transparent 60%);
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, var(--color-brand-600), var(--color-grain-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--border);
+  border-radius: 0.5rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: fade-in-up 0.4s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
