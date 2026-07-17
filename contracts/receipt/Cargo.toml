@@ -1,0 +1,17 @@
+[package]
+name = "receipt"
+version = "0.1.0"
+edition = "2021"
+description = "HarvestLink warehouse receipt token (attestation-gated, fractional, redeemable)"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
