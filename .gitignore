@@ -1,0 +1,33 @@
+# Rust / Soroban
+/contracts/target/
+**/*.rs.bk
+*.pdb
+
+# Node / Next.js
+node_modules/
+/web/.next/
+/web/out/
+/web/build/
+/web/next-env.d.ts
+.turbo/
+
+# Env / secrets
+.env
+.env.local
+.env*.local
+!*.env.example
+
+# Stellar keys (never commit identities)
+.stellar/
+.soroban/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
+npm-debug.log*
+
+# Vercel
+.vercel
