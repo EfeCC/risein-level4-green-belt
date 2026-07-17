@@ -1,0 +1,17 @@
+[package]
+name = "token"
+version = "0.1.0"
+edition = "2021"
+description = "HarvestLink mock USDC (SEP-41 fungible token) for Stellar testnet"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
