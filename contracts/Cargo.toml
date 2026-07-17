@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = ["token", "oracle", "receipt", "lending-pool"]
+
+[workspace.dependencies]
+soroban-sdk = "27"
+
+# Path deps so the lending-pool can import generated cross-contract clients.
+token = { path = "token" }
+oracle = { path = "oracle" }
+receipt = { path = "receipt" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true
