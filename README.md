@@ -19,8 +19,9 @@ they wait 30–90 days to get paid.
 
 | | |
 |---|---|
-| **Live demo** | _add your Vercel URL here after deploying `web/`_ |
-| **Demo video** | _add your Loom/YouTube link here_ |
+| **Live demo** | https://risein-level4-green-belt.vercel.app |
+| **Demo video** | https://youtu.be/z2Nm_D4p3aQ |
+| **Pilot users & proof** | [docs/PILOT.md](docs/PILOT.md) — 10 real testnet wallets, 120 on-chain txns, feedback |
 | **Network** | Stellar Testnet |
 
 ### Deployed contracts (testnet)
@@ -240,9 +241,9 @@ guide used to onboard pilot testers.
 
 ## Screenshots
 
-| Landing | Dashboard (Markets) | Mobile |
-|---|---|---|
-| ![landing](docs/screenshots/01-landing-desktop.png) | ![markets](docs/screenshots/03-app-markets-desktop.png) | ![mobile](docs/screenshots/04-app-borrow-mobile.png) |
+| Landing | Dashboard (Markets) | Mobile | Analytics |
+|---|---|---|---|
+| ![landing](docs/screenshots/01-landing-desktop.png) | ![markets](docs/screenshots/03-app-markets-desktop.png) | ![mobile](docs/screenshots/04-app-borrow-mobile.png) | ![analytics](docs/screenshots/05-analytics.png) |
 
 ## Roadmap
 
